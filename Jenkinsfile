@@ -5,6 +5,8 @@ pipeline {
         IMAGE_NAME = "casestudy3"
         CONTAINER_NAME = "casestudy3_container"
         PORT = "8080"
+        APP_DIR = "event_register_system"
+
     }
 
     stages {
