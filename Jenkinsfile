@@ -11,13 +11,13 @@ pipeline {
         stage('Build Project with Maven') {
             steps {
                 // Use root directory for Maven build
-                sh 'docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app maven:3.9.4-eclipse-temurin-17 mvn clean package'
+               sh 'docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app/CaseStudy3 maven:3.9.4-eclipse-temurin-17 mvn clean package'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:latest event_register_system'
+                sh 'docker build -t $IMAGE_NAME:latest casestudy3'
             }
         }
 
