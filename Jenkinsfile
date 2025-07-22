@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "casestudy3"
         CONTAINER_NAME = "casestudy3_container"
         PORT = "8080"
-        https://github.com/azmyra1011/event_register_system.git
+        APP_DIR = "event_register_system"
     }
 
     stages {
