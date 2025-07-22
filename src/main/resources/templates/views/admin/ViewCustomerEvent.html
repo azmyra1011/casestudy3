@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Registrations</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #fef6f9; /* pastel pink */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 70px;
+        }
+
+        h1 {
+            color: #7f8fa6;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .navbar {
+            background-color: #fff0f5; /* light pink */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #a071a9;
+        }
+
+        .nav-link {
+            color: #a071a9 !important;
+        }
+
+        .nav-link.active {
+            font-weight: bold;
+            color: #7f8fa6 !important;
+        }
+
+        .table {
+            background-color: #ffffff;
+            box-shadow: 0 0 8px rgba(160, 113, 169, 0.1);
+        }
+
+        .table-light th {
+            background-color: #f8eafc; /* soft lavender */
+        }
+
+        ul {
+            padding-left: 1rem;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Event Manager</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/events">Event List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/show/event">Customer Registrations</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-danger fw-bold" href="/" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <h1>Customer Registrations</h1>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+        <tr>
+            <th>Event ID</th>
+            <th>Customer ID</th>
+            <th>Event Type</th>
+            <th>Answers</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="event : ${customers}">
+            <td th:text="${event.id}"></td>
+            <td th:text="${event.custId}"></td>
+            <td th:text="${event.eventType}"></td>
+            <td>
+                <ul>
+                    <li th:each="entry : ${event.answers}">
+                        <strong th:text="${entry.key} + ':'"></strong>
+                        <span th:text="${entry.value}"></span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
