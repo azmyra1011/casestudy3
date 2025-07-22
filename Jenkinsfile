@@ -5,20 +5,20 @@ pipeline {
         IMAGE_NAME = "casestudy3"
         CONTAINER_NAME = "casestudy3_container"
         PORT = "8080"
-        APP_DIR = "event_register_system"
-
+        https://github.com/azmyra1011/event_register_system.git
     }
 
     stages {
         stage('Build Project with Maven') {
             steps {
-                sh 'docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app/CaseStudy3 maven:3.9.4-eclipse-temurin-17 mvn clean package'
+                // Use root directory for Maven build
+                sh 'docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app maven:3.9.4-eclipse-temurin-17 mvn clean package'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:latest CaseStudy3'
+                sh 'docker build -t $IMAGE_NAME:latest event_register_system'
             }
         }
 
