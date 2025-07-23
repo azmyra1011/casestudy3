@@ -17,7 +17,7 @@ pipeline {
             steps {
                 sh '''
                 docker network create my-app-network || true
-                docker run -d --rm --network my-app-network --name ${MONGO_CONTAINER} -p 27017:27017 mongo:latest
+                docker run -d --rm --network casestudy3-network --name ${MONGO_CONTAINER} -p 27017:27017 mongo:latest
                 '''
             }
         }
@@ -40,7 +40,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 sh '''
-                docker run -d --rm --network my-app-network -p ${APP_PORT}:8080 -e SPRING_DATA_MONGODB_URI=mongodb://${MONGO_CONTAINER}:27017/yourdbname ${APP_IMAGE}
+                docker run -d --rm --network my-app-network -p ${APP_PORT}:8080 -e SPRING_DATA_MONGODB_URI=mongodb://${MONGO_CONTAINER}:27017/CaseStudy3 ${APP_IMAGE}
                 '''
             }
         }
