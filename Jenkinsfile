@@ -7,13 +7,24 @@ pipeline {
     }
 
     environment {
-        NETWORK_NAME = 'casestudy3-network'
-        MONGO_CONTAINER = 'mongodb'
-        APP_IMAGE = 'casestudy3'
-        APP_CONTAINER = 'casestudy3-app'
+        MONGO_CONTAINER = "mongo"
+        APP_IMAGE = "casestudy3"
+        APP_PORT = "8080"
     }
 
     stages {
+        stage('Start MongoDB') {
+            steps {
+                sh '''
+                docker network create my-app-network || true
+                docker run -d --rm --network my-app-network \
+                    --name ${MONGO_CONTAINER} \
+                    -p 27017:27017 \
+                    mongo:latest
+                '''
+            }
+        }
+
         stage('Install Java & Maven, then Build JAR') {
             steps {
                 sh '''
@@ -23,40 +34,22 @@ pipeline {
             }
         }
 
-        stage('Build App Docker Image') {
+        stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $APP_IMAGE .'
+                sh "docker build -t ${APP_IMAGE} ."
             }
         }
 
-        stage('Create Docker Network') {
-            steps {
-                sh '''
-                docker network ls | grep $NETWORK_NAME || docker network create $NETWORK_NAME
-                '''
-            }
-        }
-
-        stage('Start MongoDB') {
+        stage('Run Docker Container') {
             steps {
                 sh '''
-                docker run -d --rm --name $MONGO_CONTAINER --network $NETWORK_NAME -p 27017:27017 mongo:latest
+                docker run -d --rm \
+                    --network my-app-network \
+                    -p ${APP_PORT}:8080 \
+                    -e SPRING_DATA_MONGODB_URI=mongodb://${MONGO_CONTAINER}:27017/yourdbname \
+                    ${APP_IMAGE}
                 '''
             }
-        }
-
-        stage('Run App Container') {
-            steps {
-                sh '''
-                docker run -d --rm --name $APP_CONTAINER --network $NETWORK_NAME -p 8080:8080 $APP_IMAGE
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            echo "Pipeline completed. MongoDB and App are running in same Docker network."
         }
     }
 }
