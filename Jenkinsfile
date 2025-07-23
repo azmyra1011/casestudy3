@@ -6,6 +6,12 @@ pipeline {
         }
     }
 
+    environment {
+        NETWORK_NAME = 'casestudy3-network'
+        MONGO_CONTAINER = 'mongodb'
+        APP_IMAGE = 'casestudy3'
+        APP_CONTAINER = 'casestudy3-app'
+    }
 
     stages {
         stage('Install Java & Maven, then Build JAR') {
@@ -17,19 +23,40 @@ pipeline {
             }
         }
 
-
-        stage('Build Docker Image') {
+        stage('Build App Docker Image') {
             steps {
-                sh 'docker build -t casestudy3 .'
+                sh 'docker build -t $APP_IMAGE .'
             }
         }
 
-
-        stage('Run Docker Container') {
+        stage('Create Docker Network') {
             steps {
-                sh 'docker run -d -p 8080:8080 casestudy3'
+                sh '''
+                docker network ls | grep $NETWORK_NAME || docker network create $NETWORK_NAME
+                '''
+            }
+        }
+
+        stage('Start MongoDB') {
+            steps {
+                sh '''
+                docker run -d --rm --name $MONGO_CONTAINER --network $NETWORK_NAME -p 27017:27017 mongo:latest
+                '''
+            }
+        }
+
+        stage('Run App Container') {
+            steps {
+                sh '''
+                docker run -d --rm --name $APP_CONTAINER --network $NETWORK_NAME -p 8080:8080 $APP_IMAGE
+                '''
             }
         }
     }
-}
 
+    post {
+        always {
+            echo "Pipeline completed. MongoDB and App are running in same Docker network."
+        }
+    }
+}
