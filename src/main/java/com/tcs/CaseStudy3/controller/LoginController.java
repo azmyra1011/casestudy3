@@ -31,17 +31,17 @@ public class LoginController {
                 return "redirect:/customers?userId=" + user.getId(); // Pass userId in URL
             } else {
                 model.addAttribute("error", "Invalid username or password");
-                return "/views/login";
+                return "views/login";
             }
         } else {
             model.addAttribute("error", "Invalid username or password");
-            return "/views/login";
+            return "views/login";
         }
     }
 
     @GetMapping("/register")
     public String showRegisterForm(){
-        return "/views/createUserForm";
+        return "views/createUserForm";
     }
 
 }
