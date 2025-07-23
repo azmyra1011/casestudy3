@@ -8,47 +8,34 @@ pipeline {
 
     environment {
 //         MONGO_CONTAINER = "mongo"
-        APP_IMAGE = "casestudy3"
-        APP_PORT = "8080"
+        IMAGE_NAME = "casestudy3"
+        CONTAINER_NAME = "casestudy3"
+        CONTAINER_PORT = "8080"
     }
 
-    stages {
-//         stage('Start MongoDB') {
-//             steps {
-//                 sh '''
-//                 docker rm -f mongo || true
-//                 docker volume create mongo-data || true
-//                 docker network create casestudy3-network || true
-//                 docker run -d --rm --network casestudy3-network --name ${MONGO_CONTAINER} -p 27017:27017 mongo:latest
-//                 '''
-//             }
-//         }
+   stages {
+           stage('Build JAR') {
+               steps {
+                   sh '''
+                   mvn clean package -DskipTests
+                   '''
+               }
+           }
 
-        stage('Install Java & Maven, then Build JAR') {
-            steps {
-                sh '''
-                apk add --no-cache openjdk17 maven
-                mvn clean package -DskipTests
-                '''
-            }
-        }
+           stage('Build Docker Image') {
+               steps {
+                   sh "docker build -t ${IMAGE_NAME} ."
+               }
+           }
 
-        stage('Build Docker Image') {
-            steps {
-                sh "docker build -t ${APP_IMAGE} ."
-            }
-        }
-
-        stage('Run Docker Container') {
-            steps {
-                sh """
-                    docker network create casestudy3-network || true
-                    docker run -d --rm --network casestudy3-network -p ${APP_PORT}:8080 \
-                        -e SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/CaseStudy3 \
-                        ${APP_IMAGE}
-                """
-            }
-        }
-
-    }
+           stage('Run Docker Container') {
+               steps {
+                   sh '''
+                   docker stop ${CONTAINER_NAME} || true
+                   docker rm ${CONTAINER_NAME} || true
+                   docker run -d -p 8080:8080 --name ${CONTAINER_NAME} ${IMAGE_NAME}
+                   '''
+               }
+           }
+       }
 }
