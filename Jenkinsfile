@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo '🛠 Building with Maven...'
                 sh '''
-                    docker run --rm -u $(id -u):$(id -g) -v "$PWD":/usr/src/app -w /usr/src/app/CaseStudy3 maven:3.9.4-eclipse-temurin-17 mvn clean package
+                    docker run --rm -u $(id -u):$(id -g) -v "$PWD":/usr/src/app -w /usr/src/app maven:3.9.4-eclipse-temurin-17 mvn clean package
                 '''
             }
         }
