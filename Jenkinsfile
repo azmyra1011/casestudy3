@@ -17,6 +17,7 @@ pipeline {
             steps {
                 sh '''
                 docker rm -f mongo || true
+                docker volume create mongo-data || true
                 docker network create casestudy3-network || true
                 docker run -d --rm --network casestudy3-network --name ${MONGO_CONTAINER} -p 27017:27017 mongo:latest
                 '''
