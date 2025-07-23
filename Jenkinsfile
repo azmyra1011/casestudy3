@@ -1,53 +1,35 @@
 pipeline {
-    agent any
-
-    environment {
-        IMAGE_NAME = "casestudy3"
-        CONTAINER_NAME = "casestudy3_container"
-        PORT = "8080"
+    agent {
+        docker {
+            image 'docker:24.0.2-dind'
+            args '-u root --privileged -v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
 
+
     stages {
-        stage('Build Project with Maven') {
+        stage('Install Java & Maven, then Build JAR') {
             steps {
-                echo '🛠 Building with Maven...'
                 sh '''
-                    docker run --rm -u $(id -u):$(id -g) -v "$PWD":/usr/src/app -w /usr/src/app/CaseStudy3 maven:3.9.4-eclipse-temurin-17 mvn clean package
+                apk add --no-cache openjdk17 maven
+                mvn clean package -DskipTests
                 '''
             }
         }
+
 
         stage('Build Docker Image') {
             steps {
-                echo '🐳 Building Docker image...'
-                sh 'docker build -t $IMAGE_NAME:latest CaseStudy3'
+                sh 'docker build -t casestudy3 .'
             }
         }
 
-        stage('Stop Existing Container') {
-            steps {
-                sh '''
-                    if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
-                        docker stop $CONTAINER_NAME || true
-                        docker rm $CONTAINER_NAME || true
-                    fi
-                '''
-            }
-        }
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d --name $CONTAINER_NAME -p $PORT:8080 $IMAGE_NAME:latest'
+                sh 'docker run -d -p 8080:8080 casestudy3'
             }
         }
     }
-
-    post {
-        failure {
-            echo '❌ Build failed.'
-        }
-        success {
-            echo '✅ Build succeeded.'
-        }
-    }
 }
+
