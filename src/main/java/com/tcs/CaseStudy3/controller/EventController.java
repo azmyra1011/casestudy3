@@ -31,7 +31,7 @@ public class EventController {
     public String showEvents(Model model) {
         List<Event> events = eventRepository.findAll();
         model.addAttribute("events", events);
-        return "/views/admin/ViewEvent";
+        return "views/admin/ViewEvent";
     }
 
     //Display Customer's Event History from CustID
@@ -40,7 +40,7 @@ public class EventController {
         List<EventRegister> events = eventRegisterRepository.findByCustId(custId);
         model.addAttribute("events", events);
         model.addAttribute("userId", custId);
-        return "/views/success";
+        return "views/success";
     }
 
 

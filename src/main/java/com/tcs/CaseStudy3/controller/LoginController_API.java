@@ -15,7 +15,7 @@ public class LoginController_API {
 
     @GetMapping
     public String showLoginForm(){
-        return "/views/login";
+        return "views/login";
 
     }
 

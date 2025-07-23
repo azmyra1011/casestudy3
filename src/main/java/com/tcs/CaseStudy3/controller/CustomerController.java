@@ -52,14 +52,14 @@ public class CustomerController {
         // Check if username already exists
         if (userRepository.findByUsername(username) != null) {
             model.addAttribute("message", "Username already exists!");
-            return "/views/register"; // Update with your actual register view path
+            return "views/register"; // Update with your actual register view path
         }
 
         // Check if password is alphanumeric (at least one letter and one digit)
         String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$";
         if (!password.matches(regex)) {
             model.addAttribute("message", "Password must be alphanumeric (letters and numbers only).");
-            return "/views/register";
+            return "views/register";
         }
 
         // Default role user as Customer
