@@ -14,7 +14,7 @@ WORKDIR /app
 
 
 # Copy the repackaged JAR file from target folder into the image
-COPY target/hello-app-0.0.1-SNAPSHOT.jar app.jar
+COPY target/CaseStudy3-0.0.1-SNAPSHOT.jar app.jar
 
 
 # Run the app
