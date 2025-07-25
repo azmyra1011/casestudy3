@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.9.6-eclipse-temurin-17'
+        }
+    }
 
     environment {
         IMAGE_NAME = "casestudy3"
@@ -10,10 +14,7 @@ pipeline {
     stages {
         stage('Build JAR') {
             steps {
-                sh '''
-                    sudo apt update && sudo apt install -y maven openjdk-17-jdk
-                    mvn clean package -DskipTests
-                '''
+                sh 'mvn clean package -DskipTests'
             }
         }
 
